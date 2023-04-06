@@ -26,3 +26,88 @@
     <script src="account.js"></script>
   </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account</title>
+  </head>
+  <body>
+    <h1>Account</h1>
+    <div id="user-info">
+      <h2>Username: <span id="username"></span></h2>
+      <h2>Courses:</h2>
+      <ul id="course-list"></ul>
+    </div>
+    <script src="account.js"></script>
+  </body>
+</html> -->
+
+<!-- // Get the user ID from session storage
+const userId = sessionStorage.getItem('userId');
+
+// If no ID in session storage, redirect to Home
+if (!userId) {
+  window.location.href = 'index.html';
+}
+
+// Get the user info from the server
+fetch(`/account/${userId}`)
+  .then((res) => res.json())
+  .then((data) => {
+    // Display the username
+    document.getElementById('username').textContent = data.user.username;
+
+    // Display the courses
+    const courseList = document.getElementById('course-list');
+    data.user.courses.forEach((course) => {
+      // Create the course list item
+      const courseItem = document.createElement('li');
+      const courseText = document.createTextNode(
+        `${course.code} ${course.num}: ${course.title} - ${course.description}`
+      );
+
+      // Create the remove button
+      const removeButton = document.createElement('button');
+      const removeButtonText = document.createTextNode('Remove');
+      removeButton.appendChild(removeButtonText);
+
+      // Add an event listener to the remove button
+      removeButton.addEventListener('click', () => {
+        // Send a patch request to remove the course
+        fetch(`/account/${userId}/courses/remove`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(course),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            // Refresh the course list
+            courseList.innerHTML = '';
+            data.courses.forEach((course) => {
+              const courseText = document.createTextNode(
+                `${course.code} ${course.num}: ${course.title} - ${course.description}`
+              );
+              const courseItem = document.createElement('li');
+              courseItem.appendChild(courseText);
+              courseList.appendChild(courseItem);
+              courseList.appendChild(removeButton);
+            });
+          })
+          .catch((err) => console.error(err));
+      });
+
+      // Add the course text and remove button to the course item
+      courseItem.appendChild(courseText);
+      courseItem.appendChild(removeButton);
+
+      // Add the course item to the course list
+      courseList.appendChild(courseItem);
+    });
+  })
+  .catch((err) => console.error(err));
+   -->

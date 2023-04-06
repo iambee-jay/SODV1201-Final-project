@@ -26,3 +26,75 @@
     <script src="js/signup.js"></script>
   </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <h1>Sign Up</h1>
+    <form id="signup-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username"><br>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password"><br>
+
+      <label for="confirm-password">Confirm Password:</label>
+      <input type="password" id="confirm-password" name="confirm-password"><br>
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <p id="error-text"></p>
+    <a href="/login">Already have an account? Log in here.</a>
+
+    <script>
+      const form = document.querySelector('#signup-form');
+      const errorText = document.querySelector('#error-text');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = form.elements.username.value;
+        const password = form.elements.password.value;
+        const confirmPassword = form.elements['confirm-password'].value;
+
+        if (!username || !password || !confirmPassword) {
+          errorText.textContent = 'Please fill out all fields.';
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          errorText.textContent = 'Passwords do not match.';
+          return;
+        }
+
+        try {
+          const res = await fetch('/users/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username,
+              password
+            })
+          });
+
+          const data = await res.json();
+
+          if (data.userId) {
+            sessionStorage.setItem('userId', data.userId);
+            window.location.href = '/account';
+          } else {
+            errorText.textContent = 'Username already taken. Please choose another.';
+          }
+        } catch (err) {
+          console.error(err);
+          errorText.textContent = 'An error occurred. Please try again later.';
+        }
+      });
+    </script>
+  </body>
+</html> -->
