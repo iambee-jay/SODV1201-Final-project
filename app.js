@@ -3,6 +3,8 @@ const fs = require("fs");
 const app = express();
 //All your code goes here
 
+app.use(express.static("public"));
+
 app.get("/courses", (req, res) => {
   const { code, num } = req.query;
 
@@ -20,79 +22,58 @@ app.get("/courses", (req, res) => {
 
   if (num) {
     filteredCourses = filteredCourses.filter((courses) =>
-      courses.num.includes(num)
+      courses.num.startsWith(num)
     );
   }
 
   if (code && num) {
     filteredCourses = filteredCourses.filter(
       (courses) =>
-        courses.code.includes(code.toUpperCase()) && course.code.includes(num)
+        courses.code.includes(code.toUpperCase()) && courses.num.startsWith(num)
     );
   }
 
-  res.json(filteredCourses);
+  res.status(200);
 
-  res.send(courses);
+  res.send(filteredCourses);
 });
 
 app.get("/account/:id", (req, res) => {
-  const fs = require("fs");
+  const id = req.params.id;
 
-  const userData = JSON.parse(fs.readFileSync("users.son", "utf8"));
+  let userData = JSON.parse(
+    fs.readFileSync(__dirname + "/database/users.json")
+  );
 
   console.log(req.params.id);
+
+  const user = userData.find((u) => u.id == id);
+  console.log(user);
+  if (!user) {
+    return res.status(404).json({ error: `User with ID ${id} not found` });
+  } else {
+    res.send({
+      user: { username: user.username, courses: user.courses, id: user.id },
+    });
+  }
+});
+
+app.post("/users/login", (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(
+    (u) => u.username == username && u.password == password
+  );
+  if (user) {
+    console.log(user);
+  } else {
+    res.status(401).json({ error: "Invalid username or password" });
+  }
 });
 
 //Do not remove this line. This allows the test suite to start
 //multiple instances of your server on different ports
+
 module.exports = app;
-
-// app.get("/courses", (req, res) => {
-//   // Filter by course code prefix
-//   let filteredCourses = courses;
-//   if (req.query.code) {
-//     const codePrefix = req.query.code.toUpperCase();
-//     filteredCourses = courses.filter((c) => c.code.startsWith(codePrefix));
-//   }
-
-//   // Filter by course number or prefix
-//   if (req.query.num) {
-//     const numPrefix = req.query.num.toString().slice(0, -2);
-//     filteredCourses = filteredCourses.filter((c) =>
-//       c.num.toString().startsWith(numPrefix)
-//     );
-//   }
-
-//   res.json({ courses: filteredCourses });
-// });
-
-// app.listen(3000, () => {
-//   console.log("Server started on port 3000");
-// });
-
-// app.get("/account/:id", (req, res) => {
-//   const id = req.params.id;
-//   const user = users.find((u) => u.id === id);
-//   if (!user) {
-//     return res.status(404).json({ error: `User with ID ${id} not found` });
-//   }
-//   return res.json({
-//     user: { username: user.username, courses: user.courses, id: user.id },
-//   });
-// });
-
-// app.post("/users/login", (req, res) => {
-//   const { username, password } = req.body;
-//   const user = users.find(
-//     (u) => u.username === username && u.password === password
-//   );
-//   if (user) {
-//     res.json({ userId: user.id });
-//   } else {
-//     res.status(401).json({ error: "Invalid username or password" });
-//   }
-// });
 
 // app.post("/users/signup", (req, res) => {
 //   const { username, password } = req.body;
