@@ -59,42 +59,51 @@ app.get("/account/:id", (req, res) => {
 });
 
 app.post("/users/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(
-    (u) => u.username == username && u.password == password
-  );
-  if (user) {
-    console.log(user);
-  } else {
-    res.status(401).json({ error: "Invalid username or password" });
+  const users = loadUsers();
+
+  console.log(req.body);
+
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].username == req.body.username) {
+      if (users[i].password == req.body.password) {
+        res.json({ userId: users[i].id });
+        return;
+      } else {
+        res.statusCode = 401;
+        res.json({ userId: null, error: "wrong password" });
+        return;
+      }
+    }
   }
+
+  res.statusCode = 404;
+  res.json({ userId: null, error: "account doesn't exist" });
 });
 
-//Do not remove this line. This allows the test suite to start
-//multiple instances of your server on different ports
+app.post("/users/signup", (req, res) => {
+  let users = loadUsers();
 
-module.exports = app;
+  console.log(req.body);
 
-// app.post("/users/signup", (req, res) => {
-//   const { username, password } = req.body;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].username == req.body.username) {
+      res.statusCode = 409;
+      res.json({ userId: null, error: "username unavailable" });
+      return;
+    }
+  }
 
-//   // Check if username is already in use
-//   const userExists = users.some((user) => user.username === username);
-//   if (userExists) {
-//     return res.status(400).json({ error: "Username already in use" });
-//   }
+  let newUser = {
+    username: req.body.username,
+    password: req.body.password,
+    id: users.length + 1,
+  };
+  users.push(newUser);
 
-//   // Add new user to database
-//   const newUser = {
-//     id: uuidv4(),
-//     username,
-//     password,
-//   };
-//   users.push(newUser);
-
-//   // Respond with userId
-//   res.json({ userId: newUser.id });
-// });
+  writeUsers(users);
+  res.statusCode = 201;
+  res.json({ userId: newUser.id });
+});
 
 // app.patch("/account/:id/courses/add", (req, res) => {
 //   const userId = parseInt(req.params.id);
@@ -156,3 +165,16 @@ module.exports = app;
 //   // return updated user object
 //   return res.json({ user });
 // });
+
+function loadUsers() {
+  return JSON.parse(fs.readFileSync("./database/users.json").toString());
+}
+
+function writeUsers(newData) {
+  fs.writeFileSync("./database/users.json", JSON.stringify(newData));
+}
+
+//Do not remove this line. This allows the test suite to start
+//multiple instances of your server on different ports
+
+module.exports = app;
