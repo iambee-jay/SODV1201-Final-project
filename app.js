@@ -3,6 +3,8 @@ const fs = require("fs");
 const app = express();
 //All your code goes here
 
+app.use(express.json()); //Used to parse JSON bodies
+
 app.use(express.static("public"));
 
 app.get("/courses", (req, res) => {
@@ -41,9 +43,7 @@ app.get("/courses", (req, res) => {
 app.get("/account/:id", (req, res) => {
   const id = req.params.id;
 
-  let userData = JSON.parse(
-    fs.readFileSync(__dirname + "/database/users.json")
-  );
+  let userData = loadUsers();
 
   console.log(req.params.id);
 
@@ -59,9 +59,7 @@ app.get("/account/:id", (req, res) => {
 });
 
 app.post("/users/login", (req, res) => {
-  const users = loadUsers();
-
-  console.log(req.body);
+  let users = loadUsers();
 
   for (let i = 0; i < users.length; i++) {
     if (users[i].username == req.body.username) {
@@ -83,8 +81,6 @@ app.post("/users/login", (req, res) => {
 app.post("/users/signup", (req, res) => {
   let users = loadUsers();
 
-  console.log(req.body);
-
   for (let i = 0; i < users.length; i++) {
     if (users[i].username == req.body.username) {
       res.statusCode = 409;
@@ -105,66 +101,75 @@ app.post("/users/signup", (req, res) => {
   res.json({ userId: newUser.id });
 });
 
-// app.patch("/account/:id/courses/add", (req, res) => {
-//   const userId = parseInt(req.params.id);
-//   const course = req.body;
+app.patch("/account/:id/courses/add", (req, res) => {
+  let users = loadUsers();
+  const userId = parseInt(req.params.id);
+  const course = req.body;
 
-//   // Check if course object is valid
-//   if (!course.code || !course.title || !course.description) {
-//     return res.status(400).json({ error: "Invalid course object" });
-//   }
+  // Check if course object is valid
+  if (!course.code || !course.title || !course.description) {
+    res.status(400).json({ error: "Invalid course object" });
+  }
 
-//   // Check if user with given ID exists
-//   const user = db.users.find((user) => user.id === userId);
-//   if (!user) {
-//     return res.status(404).json({ error: "User not found" });
-//   }
+  // Check if user with given ID exists
+  const user = users.find((user) => user.id === userId);
+  if (!user) {
+    res.statusCode = 401;
+    res.json({ error: "User not found" });
+    return;
+  }
 
-//   // Check if course is already in user's course list
-//   const alreadyEnrolled = user.courses.some((c) => c.code === course.code);
-//   if (alreadyEnrolled) {
-//     return res.status(400).json({ error: "Course already added" });
-//   }
+  // Check if course is already in user's course list
+  const alreadyEnrolled = users.courses.some((c) => c.code === course.code);
+  if (alreadyEnrolled) {
+    res.statusCode = 409;
+    res.json({ error: "Course already added" });
+    return;
+  }
 
-//   // Add course to user's course list
-//   user.courses.push(course);
+  // Add course to user's course list
+  user.courses.push(course);
 
-//   // Update user data in the database
-//   db.users = db.users.map((u) => (u.id === userId ? user : u));
+  // Update user data in the database
+  users = users.map((u) => (u.id === userId ? user : u));
 
-//   // Respond with updated course list
-//   res.json(user.courses);
-// });
+  // Respond with updated course list
+  res.json(user.courses);
+  res.statusCode = 201;
+});
 
-// app.patch("/account/:id/courses/remove", (req, res) => {
-//   const userId = req.params.id;
-//   const course = req.body;
+app.patch("/account/:id/courses/remove", (req, res) => {
+  let users = loadUsers();
+  const userId = req.params.id;
+  const course = req.body;
 
-//   // check if course object exists and has necessary fields
-//   if (!course || !course.code || !course.title || !course.description) {
-//     return res.status(400).json({ error: "Invalid course object" });
-//   }
+  // check if course object exists and has necessary fields
+  if (!course || !course.code || !course.title || !course.description) {
+    return res.status(400).json({ error: "Invalid course object" });
+  }
 
-//   // check if user exists
-//   const user = users.find((user) => user.id === userId);
-//   if (!user) {
-//     return res.status(404).json({ error: "User not found" });
-//   }
+  // check if user exists
+  const user = users.find((user) => user.id === userId);
+  if (!user) {
+    res.statusCode = 401;
+    res.json({ error: "User not found" });
+    return;
+  }
 
-//   // check if course is in user's course list
-//   const courseIndex = user.courses.findIndex((c) => c.code === course.code);
-//   if (courseIndex === -1) {
-//     return res
-//       .status(400)
-//       .json({ error: "Course not found in user's course list" });
-//   }
+  // check if course is in user's course list
+  const courseIndex = user.courses.findIndex((c) => c.code === course.code);
+  if (courseIndex === -1) {
+    return res
+      .status(400)
+      .json({ error: "Course not found in user's course list" });
+  }
 
-//   // remove course from user's course list
-//   user.courses.splice(courseIndex, 1);
+  // remove course from user's course list
+  user.courses.splice(courseIndex, 1);
 
-//   // return updated user object
-//   return res.json({ user });
-// });
+  // return updated user object
+  return res.json({ user });
+});
 
 function loadUsers() {
   return JSON.parse(fs.readFileSync("./database/users.json").toString());

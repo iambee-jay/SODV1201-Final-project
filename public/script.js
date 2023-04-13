@@ -14,7 +14,9 @@ async function login() {
   };
 
   let response = await fetch("/users/login", config);
+
   let data = await response.json();
+  console.log(data);
   if (data.userId) {
     localStorage.setItem("userId", data.userId);
   }
