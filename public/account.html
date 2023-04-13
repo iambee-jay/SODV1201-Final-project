@@ -1,111 +1,66 @@
+<!-- account.html -->
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <title>Account</title>
-    <link rel="stylesheet" href="styleAccount.css" />
+    <title>My Account</title>
   </head>
   <body>
-    <h1>Account</h1>
-
-    <!-- Display username and course list here -->
-
-    <!-- Form to remove a course -->
-    <form id="remove-course-form">
-      <label for="remove-course-code">Code:</label>
-      <input type="text" id="remove-course-code" name="code" />
-      <br />
-      <button type="submit">Remove Course</button>
-    </form>
-
-    <!-- Display success or error message here -->
-
-    <!-- Link back to home page -->
-    <a href="index.html">Home</a>
-  </body>
-</html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Account</title>
-  </head>
-  <body>
-    <h1>Account</h1>
-    <div id="user-info">
-      <h2>Username: <span id="username"></span></h2>
-      <h2>Courses:</h2>
-      <ul id="course-list"></ul>
-    </div>
-    <script src="account.js"></script>
-  </body>
-</html> -->
-
-<!-- // Get the user ID from session storage
-const userId = sessionStorage.getItem('userId');
-
-// If no ID in session storage, redirect to Home
-if (!userId) {
-  window.location.href = 'index.html';
-}
-
-// Get the user info from the server
-fetch(`/account/${userId}`)
-  .then((res) => res.json())
-  .then((data) => {
-    // Display the username
-    document.getElementById('username').textContent = data.user.username;
-
-    // Display the courses
-    const courseList = document.getElementById('course-list');
-    data.user.courses.forEach((course) => {
-      // Create the course list item
-      const courseItem = document.createElement('li');
-      const courseText = document.createTextNode(
-        `${course.code} ${course.num}: ${course.title} - ${course.description}`
-      );
-
-      // Create the remove button
-      const removeButton = document.createElement('button');
-      const removeButtonText = document.createTextNode('Remove');
-      removeButton.appendChild(removeButtonText);
-
-      // Add an event listener to the remove button
-      removeButton.addEventListener('click', () => {
-        // Send a patch request to remove the course
-        fetch(`/account/${userId}/courses/remove`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(course),
-        })
-          .then((res) => res.json())
+    <h1>My Account</h1>
+    <div id="username"></div>
+    <h2>My Courses</h2>
+    <ul id="courseList"></ul>
+    <script>
+      // Check if ID is in session storage
+      const id = localStorage.getItem("userId");
+      if (!id) {
+        // Redirect to Home if no ID in session storage
+        window.location.href = "index.html";
+      } else {
+        // Request account data from /account/:id
+        fetch(`/account/${id}`)
+          .then((response) => response.json())
           .then((data) => {
-            // Refresh the course list
-            courseList.innerHTML = '';
-            data.courses.forEach((course) => {
-              const courseText = document.createTextNode(
-                `${course.code} ${course.num}: ${course.title} - ${course.description}`
-              );
-              const courseItem = document.createElement('li');
-              courseItem.appendChild(courseText);
-              courseList.appendChild(courseItem);
-              courseList.appendChild(removeButton);
+            // Display username
+            let user = data.user;
+            document.getElementById(
+              "username"
+            ).textContent = `Username: ${user.username}`;
+
+            // Display course list
+            const courseList = document.getElementById("courseList");
+            user.courses.forEach((course) => {
+              // Create course list item
+              const li = document.createElement("li");
+              li.textContent = `${course.code} ${course.num}: ${course.title} - ${course.description}`;
+
+              // Create remove button
+              const removeButton = document.createElement("button");
+              removeButton.textContent = "Remove";
+              removeButton.addEventListener("click", () => {
+                // Send patch request to /account/:id/courses/remove with course object
+                fetch(`/account/${id}/courses/remove`, {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(course),
+                })
+                  .then(() => {
+                    // Refresh list UI with updated list
+                    li.remove();
+                  })
+                  .catch((error) => console.error(error));
+              });
+
+              // Add remove button to course list item
+              li.appendChild(removeButton);
+
+              // Add course list item to course list
+              courseList.appendChild(li);
             });
           })
-          .catch((err) => console.error(err));
-      });
-
-      // Add the course text and remove button to the course item
-      courseItem.appendChild(courseText);
-      courseItem.appendChild(removeButton);
-
-      // Add the course item to the course list
-      courseList.appendChild(courseItem);
-    });
-  })
-  .catch((err) => console.error(err));
-   -->
+          .catch((error) => console.error(error));
+      }
+    </script>
+  </body>
+</html>
