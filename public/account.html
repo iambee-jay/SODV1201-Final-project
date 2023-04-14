@@ -1,14 +1,31 @@
-<!-- account.html -->
 <!DOCTYPE html>
 <html>
   <head>
     <title>My Account</title>
+    <link rel="stylesheet" href="styleAccount.css" />
+    <script src="script.js" defer></script>
   </head>
-  <body>
+  <body onload="accountLoadCourses()">
     <h1>My Account</h1>
     <div id="username"></div>
     <h2>My Courses</h2>
     <ul id="courseList"></ul>
+
+    <h1>Course Catalog</h1>
+    <div>
+      <label for="filter-code">Filter by Code:</label>
+      <input type="text" id="filter-code" name="filter-code" />
+      <br />
+      <label for="filter-num">Filter by Number:</label>
+      <input type="text" id="filter-num" name="filter-num" />
+      <br />
+      <button type="submit" onclick="accountLoadCourses()">Filter</button>
+    </div>
+    <ul id="courses-list">
+      <!-- Courses will be added dynamically here -->
+    </ul>
+    <button onclick="removeFromLocalStorage()">Logout</button>
+
     <script>
       // Check if ID is in session storage
       const id = localStorage.getItem("userId");
