@@ -30,12 +30,13 @@ async function signup() {
   const confirmPassword = form.elements["confirm-password"].value;
 
   if (!username || !password || !confirmPassword) {
-    errorText.textContent = "Please fill out all fields.";
+    getmessage("Please fill out all fields.");
+    // errorText.textContent = "Please fill out all fields.";
     return;
   }
 
   if (password !== confirmPassword) {
-    errorText.textContent = "Passwords do not match.";
+    getmessage("Passwords do not match.");
     return;
   }
 
@@ -137,4 +138,8 @@ async function removeFromLocalStorage() {
   localStorage.removeItem(id);
   localStorage.removeItem("userId");
   window.location.href = "/index.html";
+}
+
+function getmessage(message) {
+  document.querySelector("#error-text").textContent = message;
 }

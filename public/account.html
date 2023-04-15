@@ -48,7 +48,7 @@
             user.courses.forEach((course) => {
               // Create course list item
               const li = document.createElement("li");
-              li.textContent = `${course.code} ${course.num}: ${course.title} - ${course.description}`;
+              li.textContent = `${course.code} ${course.num}: ${course.name} - ${course.description}`;
 
               // Create remove button
               const removeButton = document.createElement("button");
@@ -65,6 +65,8 @@
                   .then(() => {
                     // Refresh list UI with updated list
                     li.remove();
+                    alert("Course removed!");
+                    window.location.href = "account.html";
                   })
                   .catch((error) => console.error(error));
               });
