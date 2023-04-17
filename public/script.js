@@ -102,11 +102,12 @@ async function accountLoadCourses() {
   data.forEach((course) => {
     // Create course list item
     const li = document.createElement("li");
-    li.textContent = `${course.code} ${course.num}: ${course.name} - ${course.description}`;
+    li.textContent = `${course.code} ${course.num}: ${course.name} - ${course.description}  `;
     courseList.appendChild(li);
 
     // Create add button
     const addButton = document.createElement("button");
+    addButton.id = "add";
     addButton.textContent = "Add";
 
     // Add event listener to add button

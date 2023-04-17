@@ -24,7 +24,7 @@
     <ul id="courses-list">
       <!-- Courses will be added dynamically here -->
     </ul>
-    <button onclick="removeFromLocalStorage()">Logout</button>
+    <button id="remove" onclick="removeFromLocalStorage()">Logout</button>
 
     <script>
       // Check if ID is in session storage
@@ -48,10 +48,11 @@
             user.courses.forEach((course) => {
               // Create course list item
               const li = document.createElement("li");
-              li.textContent = `${course.code} ${course.num}: ${course.name} - ${course.description}`;
+              li.textContent = `${course.code} ${course.num}: ${course.name} - ${course.description}  `;
 
               // Create remove button
               const removeButton = document.createElement("button");
+              removeButton.id = "remove";
               removeButton.textContent = "Remove";
               removeButton.addEventListener("click", () => {
                 // Send patch request to /account/:id/courses/remove with course object
