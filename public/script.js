@@ -18,8 +18,8 @@ async function login() {
   let data = await response.json();
   if (data.userId) {
     localStorage.setItem("userId", data.userId);
+    window.location.href = "/account.html";
   }
-  window.location.href = "/account.html";
 }
 
 async function signup() {
@@ -123,6 +123,8 @@ async function accountLoadCourses() {
         .then(() => {
           // Refresh list UI with updated list
           li.remove(); // Remove course from list
+          alert("Course Added!");
+          window.location.reload();
         })
         .catch((error) => console.error(error));
     });
