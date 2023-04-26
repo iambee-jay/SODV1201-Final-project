@@ -1,1 +1,16 @@
-[{"username":"admin","password":"admin","id":1,"courses":[{"code":"TECH","num":"2102","name":"Enterprise Computing","credits":"3","description":"Learners will learn about the protocols and applications that make possible the simultaneous and seamless interaction of millions of computers through the internet and enterprise networks. In order to design and implement enterprise class applications, the learner will undertake an in depth study of the concepts of enterprise computing. To understand the practical aspect of enterprise computing, the learner will build a working example of a dynamic, secure web enterprise application. Topics that will be covered include Service Oriented Architecture (SOA) and Service Component Architecture (SCA).Prerequisite: TECH1201, SODV2201"},{"code":"SODV","num":"1101","name":"Programming Fundamentals","credits":"3","description":"Computer programming is central to software development. Learners analyze basic software and technology problems and develop a good programming style and logical thinking to write structured instruction that addresses those problems. Learners demonstrate their structured coding skills by writing correct code with clarity and quality. They use extensively the structured control flow, repetition, block structure, and subroutines in this course."},{"code":"TECH","num":"1101","name":"Web and Internet Fundamentals","credits":"3","description":"This course focuses on the design, construction and website publishing that meet web standards for the internet. During the design of websites, learners address issues such as bandwidth, aesthetics and the user interface. During the construction of websites, learners focus on the use of Hyper Text Markup Language (HTML), cascading style sheets (CSS), basic client-side scripting, website maintenance and web technologies."}]},{"username":"bj","password":"1","id":2}]
+[
+  {
+    "username": "admin",
+    "password": "admin",
+    "id": 1,
+    "courses": [
+      {
+        "code": "SODV",
+        "num": "1101",
+        "name": "Programming Fundamentals",
+        "credits": "3",
+        "description": "Computer programming is central to software development. Learners analyze basic software and technology problems and develop a good programming style and logical thinking to write structured instruction that addresses those problems. Learners demonstrate their structured coding skills by writing correct code with clarity and quality. They use extensively the structured control flow, repetition, block structure, and subroutines in this course."
+      }
+    ]
+  }
+]

@@ -46,8 +46,6 @@ app.get("/account/:id", (req, res) => {
 
   let userData = loadUsers();
 
-  console.log(req.params.id);
-
   const user = userData.find((u) => u.id == id);
   if (!user) {
     return res.status(404).json({ error: `User with ID ${id} not found` });
@@ -98,6 +96,7 @@ app.post("/users/signup", (req, res) => {
     username: req.body.username,
     password: req.body.password,
     id: users.length + 1,
+    courses: [],
   };
   users.push(newUser);
 
@@ -126,6 +125,7 @@ app.patch("/account/:id/courses/add", (req, res) => {
   }
 
   // Check if course is already in user's course list
+  console.log(user);
   const alreadyEnrolled = user.courses.some((c) => c.name == course.name);
   if (alreadyEnrolled) {
     res.statusCode = 409;

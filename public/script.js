@@ -16,10 +16,11 @@ async function login() {
   let response = await fetch("/users/login", config);
 
   let data = await response.json();
+
   if (data.userId) {
     localStorage.setItem("userId", data.userId);
-    window.location.href = "/account.html";
   }
+  window.location.href = "/account.html";
 }
 
 async function signup() {
@@ -40,35 +41,31 @@ async function signup() {
     return;
   }
 
-  try {
-    const errorText = document.querySelector("#error-text");
+  let body = {
+    username: document.getElementById("username").value,
+    password: document.getElementById("password").value,
+  };
 
-    let body = {
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value,
-    };
+  let config = {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-    let config = {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+  let response = await fetch("/users/signup", config);
 
-    let response = await fetch("/users/signup", config);
-
-    let data = await response.json();
-    if (data.userId) {
-      localStorage.setItem("userId", data.userId);
-      window.location.href = "/account.html";
-    } else {
-      errorText.textContent = "Username already taken. Please choose another.";
-    }
-  } catch (err) {
-    console.error(err);
-    errorText.textContent = "An error occurred. Please try again later.";
+  let data = await response.json();
+  if (data.userId) {
+    window.location.href = "/login.html";
+    //localStorage.setItem("userId", data.userId);
+  } else {
+    errorText.textContent = "Username already taken. Please choose another.";
+    return;
   }
+
+  // errorText.textContent = "An error occurred. Please try again later.";
 }
 
 async function loadCourses() {
